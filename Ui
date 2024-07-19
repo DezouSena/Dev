@@ -1,8 +1,11 @@
--- Tạo khung chính
+-- Tạo ScreenGui và khung chính
 local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "CustomUI"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 400, 0, 500)
-mainFrame.Position = UDim2.new(0.5, -200, 0.5, -250)
+mainFrame.Size = UDim2.new(0, 400, 0, 600)
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -300)
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 mainFrame.Parent = screenGui
 
@@ -14,44 +17,54 @@ title.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 title.Text = "Sitink Hub"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextScaled = true
+title.Font = Enum.Font.SourceSansBold
 title.Parent = mainFrame
 
--- Tạo nút chức năng bên trái
-local function createMenuButton(parent, text, position)
+-- Tạo menu bên trái
+local menuFrame = Instance.new("Frame")
+menuFrame.Size = UDim2.new(0, 100, 1, -50)
+menuFrame.Position = UDim2.new(0, 0, 0, 50)
+menuFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+menuFrame.Parent = mainFrame
+
+local function createMenuButton(text, position)
     local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0, 120, 0, 50)
+    button.Size = UDim2.new(1, 0, 0, 50)
     button.Position = position
-    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     button.Text = text
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.TextScaled = true
-    button.Parent = parent
+    button.Font = Enum.Font.SourceSansBold
+    button.Parent = menuFrame
+    return button
 end
 
--- Tạo các nút chức năng
-createMenuButton(mainFrame, "Home", UDim2.new(0, 10, 0, 60))
-createMenuButton(mainFrame, "Stack Farm", UDim2.new(0, 10, 0, 120))
+local homeButton = createMenuButton("Home", UDim2.new(0, 0, 0, 0))
+local farmButton = createMenuButton("Stack Farm", UDim2.new(0, 0, 0, 50))
 
 -- Tạo các phần tử giao diện
 local function createLabel(parent, text, position)
     local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, -140, 0, 40)
+    label.Size = UDim2.new(1, -100, 0, 40)
     label.Position = position
     label.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     label.Text = text
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
     label.TextScaled = true
+    label.Font = Enum.Font.SourceSans
     label.Parent = parent
 end
 
 local function createToggleButton(parent, text, position)
     local toggleButton = Instance.new("TextButton")
-    toggleButton.Size = UDim2.new(1, -140, 0, 40)
+    toggleButton.Size = UDim2.new(1, -100, 0, 40)
     toggleButton.Position = position
     toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     toggleButton.Text = text
     toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     toggleButton.TextScaled = true
+    toggleButton.Font = Enum.Font.SourceSans
     toggleButton.Parent = parent
 
     local toggled = false
@@ -67,18 +80,47 @@ end
 
 local function createDropdown(parent, text, position)
     local dropdown = Instance.new("TextButton")
-    dropdown.Size = UDim2.new(1, -140, 0, 40)
+    dropdown.Size = UDim2.new(1, -100, 0, 40)
     dropdown.Position = position
     dropdown.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     dropdown.Text = text
     dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
     dropdown.TextScaled = true
+    dropdown.Font = Enum.Font.SourceSans
     dropdown.Parent = parent
+
+    local items = {"One", "Two", "Three"}
+    local dropdownMenu = Instance.new("Frame")
+    dropdownMenu.Size = UDim2.new(1, 0, 0, #items * 30)
+    dropdownMenu.Position = UDim2.new(0, 0, 1, 0)
+    dropdownMenu.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    dropdownMenu.Visible = false
+    dropdownMenu.Parent = dropdown
+
+    for i, item in ipairs(items) do
+        local itemButton = Instance.new("TextButton")
+        itemButton.Size = UDim2.new(1, 0, 0, 30)
+        itemButton.Position = UDim2.new(0, 0, 0, (i-1) * 30)
+        itemButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        itemButton.Text = item
+        itemButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        itemButton.TextScaled = true
+        itemButton.Font = Enum.Font.SourceSans
+        itemButton.Parent = dropdownMenu
+        itemButton.MouseButton1Click:Connect(function()
+            dropdown.Text = item
+            dropdownMenu.Visible = false
+        end)
+    end
+
+    dropdown.MouseButton1Click:Connect(function()
+        dropdownMenu.Visible = not dropdownMenu.Visible
+    end)
 end
 
 local function createSlider(parent, text, position)
     local sliderFrame = Instance.new("Frame")
-    sliderFrame.Size = UDim2.new(1, -140, 0, 40)
+    sliderFrame.Size = UDim2.new(1, -100, 0, 40)
     sliderFrame.Position = position
     sliderFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     sliderFrame.Parent = parent
@@ -90,6 +132,7 @@ local function createSlider(parent, text, position)
     label.Text = text
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
     label.TextScaled = true
+    label.Font = Enum.Font.SourceSans
     label.Parent = sliderFrame
 
     local slider = Instance.new("TextButton")
@@ -121,10 +164,12 @@ local function createSlider(parent, text, position)
 end
 
 -- Tạo các phần tử giao diện trong mainFrame
-createLabel(mainFrame, "Redeem All Codes", UDim2.new(0, 130, 0, 60))
-createToggleButton(mainFrame, "Auto Farm", UDim2.new(0, 130, 0, 110))
-createDropdown(mainFrame, "Select Option", UDim2.new(0, 130, 0, 160))
-createSlider(mainFrame, "WalkSpeed", UDim2.new(0, 130, 0, 210))
+local contentFrame = Instance.new("Frame")
+contentFrame.Size = UDim2.new(1, -100, 1, -50)
+contentFrame.Position = UDim2.new(0, 100, 0, 50)
+contentFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+contentFrame.Parent = mainFrame
 
--- Hiển thị giao diện người dùng
-screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+createLabel(contentFrame, "Redeem All Codes", UDim2.new(0, 0, 0, 10))
+createToggleButton(contentFrame, "Auto Farm", UDim2.new(0, 0, 0, 60))
+createDropdown(contentFrame, "Select Option", UDim2.new(0, 0, 0, 110
