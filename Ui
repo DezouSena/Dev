@@ -1,0 +1,57 @@
+-- Tạo khung chính
+local screenGui = Instance.new("ScreenGui")
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 300, 0, 400)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.Parent = screenGui
+
+-- Tạo các thành phần giao diện
+local function createLabel(parent, text, position)
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(0, 280, 0, 40)
+    label.Position = position
+    label.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.Parent = parent
+end
+
+local function createButton(parent, text, position)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0, 280, 0, 40)
+    button.Position = position
+    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.Text = text
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Parent = parent
+end
+
+local function createToggleButton(parent, text, position)
+    local toggleButton = Instance.new("TextButton")
+    toggleButton.Size = UDim2.new(0, 280, 0, 40)
+    toggleButton.Position = position
+    toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    toggleButton.Text = text
+    toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toggleButton.Parent = parent
+
+    local toggled = false
+    toggleButton.MouseButton1Click:Connect(function()
+        toggled = not toggled
+        if toggled then
+            toggleButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+        else
+            toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        end
+    end)
+end
+
+-- Tạo các thành phần giao diện
+createLabel(mainFrame, "Redeem All Codes", UDim2.new(0, 10, 0, 10))
+createLabel(mainFrame, "Auto Farm", UDim2.new(0, 10, 0, 60))
+createButton(mainFrame, "Select Option", UDim2.new(0, 10, 0, 110))
+createToggleButton(mainFrame, "Toggle Button", UDim2.new(0, 10, 0, 160))
+
+-- Hiển thị giao diện người dùng
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
