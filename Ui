@@ -1,39 +1,57 @@
 -- Tạo khung chính
 local screenGui = Instance.new("ScreenGui")
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 300, 0, 400)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
+mainFrame.Size = UDim2.new(0, 400, 0, 500)
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -250)
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 mainFrame.Parent = screenGui
 
--- Tạo các thành phần giao diện
-local function createLabel(parent, text, position)
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0, 280, 0, 40)
-    label.Position = position
-    label.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    label.Text = text
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.Parent = parent
-end
+-- Tạo tiêu đề chính
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 50)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+title.Text = "Sitink Hub"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextScaled = true
+title.Parent = mainFrame
 
-local function createButton(parent, text, position)
+-- Tạo nút chức năng bên trái
+local function createMenuButton(parent, text, position)
     local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0, 280, 0, 40)
+    button.Size = UDim2.new(0, 120, 0, 50)
     button.Position = position
     button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     button.Text = text
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextScaled = true
     button.Parent = parent
+end
+
+-- Tạo các nút chức năng
+createMenuButton(mainFrame, "Home", UDim2.new(0, 10, 0, 60))
+createMenuButton(mainFrame, "Stack Farm", UDim2.new(0, 10, 0, 120))
+
+-- Tạo các phần tử giao diện
+local function createLabel(parent, text, position)
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -140, 0, 40)
+    label.Position = position
+    label.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextScaled = true
+    label.Parent = parent
 end
 
 local function createToggleButton(parent, text, position)
     local toggleButton = Instance.new("TextButton")
-    toggleButton.Size = UDim2.new(0, 280, 0, 40)
+    toggleButton.Size = UDim2.new(1, -140, 0, 40)
     toggleButton.Position = position
     toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     toggleButton.Text = text
     toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toggleButton.TextScaled = true
     toggleButton.Parent = parent
 
     local toggled = false
@@ -47,11 +65,66 @@ local function createToggleButton(parent, text, position)
     end)
 end
 
--- Tạo các thành phần giao diện
-createLabel(mainFrame, "Redeem All Codes", UDim2.new(0, 10, 0, 10))
-createLabel(mainFrame, "Auto Farm", UDim2.new(0, 10, 0, 60))
-createButton(mainFrame, "Select Option", UDim2.new(0, 10, 0, 110))
-createToggleButton(mainFrame, "Toggle Button", UDim2.new(0, 10, 0, 160))
+local function createDropdown(parent, text, position)
+    local dropdown = Instance.new("TextButton")
+    dropdown.Size = UDim2.new(1, -140, 0, 40)
+    dropdown.Position = position
+    dropdown.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    dropdown.Text = text
+    dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
+    dropdown.TextScaled = true
+    dropdown.Parent = parent
+end
+
+local function createSlider(parent, text, position)
+    local sliderFrame = Instance.new("Frame")
+    sliderFrame.Size = UDim2.new(1, -140, 0, 40)
+    sliderFrame.Position = position
+    sliderFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    sliderFrame.Parent = parent
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(0.3, 0, 1, 0)
+    label.Position = UDim2.new(0, 0, 0, 0)
+    label.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextScaled = true
+    label.Parent = sliderFrame
+
+    local slider = Instance.new("TextButton")
+    slider.Size = UDim2.new(0.1, 0, 1, 0)
+    slider.Position = UDim2.new(0.35, 0, 0, 0)
+    slider.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+    slider.Text = ""
+    slider.Parent = sliderFrame
+
+    local uis = game:GetService("UserInputService")
+    local dragging = false
+
+    slider.MouseButton1Down:Connect(function()
+        dragging = true
+    end)
+
+    uis.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    uis.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local x = math.clamp(input.Position.X - sliderFrame.AbsolutePosition.X, 0, sliderFrame.AbsoluteSize.X - slider.AbsoluteSize.X)
+            slider.Position = UDim2.new(0, x, 0, 0)
+        end
+    end)
+end
+
+-- Tạo các phần tử giao diện trong mainFrame
+createLabel(mainFrame, "Redeem All Codes", UDim2.new(0, 130, 0, 60))
+createToggleButton(mainFrame, "Auto Farm", UDim2.new(0, 130, 0, 110))
+createDropdown(mainFrame, "Select Option", UDim2.new(0, 130, 0, 160))
+createSlider(mainFrame, "WalkSpeed", UDim2.new(0, 130, 0, 210))
 
 -- Hiển thị giao diện người dùng
 screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
